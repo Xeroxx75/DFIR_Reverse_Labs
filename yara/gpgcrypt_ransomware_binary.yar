@@ -4,7 +4,7 @@ rule GPGcryptor_Ransomware_Lab
         description = "Detects the lab ransomware SecurityHealth.exe (GPGcryptorV3.2)"
         author = "Ibrahim Diallo"
         context = "Academic malware analysis lab"
-        reference = "dfir-reverse-labs/malware-lab-gpgcryptor"
+        reference = "dfir-reverse-labs/dfir-malware-lab"
 
     strings:
         $s1 = "GPGcryptorV3.2!!!" ascii

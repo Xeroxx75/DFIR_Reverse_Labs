@@ -19,12 +19,12 @@ The goal is to document my technical exploration, consolidate practical knowledg
   - screenshots of the GUI, imports, and sections.  
   See the local `README.md` in this folder for details.
 
-- `malware-lab-gpgcryptor/`  
+- `dfir-malware-lab/`  
   Academic ransomware analysis lab (CentraleSupélec):
   - full report `TP_Analyse_GPGcryptor.pdf`,
   - analysis of persistence, encrypted file format and Camellia-128 CFB crypto,
   - defensive tools: Python decryptor and PowerShell restoration script.  
-  See `malware-lab-gpgcryptor/README.md`.
+  See `dfir-malware-lab/README.md`.
 
 - `yara/`  
   Educational YARA rules derived from the labs:

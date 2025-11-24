@@ -23,7 +23,7 @@ They are **educational** and derived from the labs in this repository.
   - minimum filesize to exclude false positives.
 
 - `gpgcrypt_ransomware_binary.yar`  
-  Detects the **GPGcryptor lab ransomware binary** analysed in `malware-lab-gpgcryptor/`:
+  Detects the **GPGcryptor lab ransomware binary** analysed in `dfir-malware-lab/`:
   - strings such as `GPGcryptorV3.2!!!`, ransom note messages,
   - artefacts like `SecurityHealth.exe` and the IV marker `#GPC0DEMAGICVAL`.
 

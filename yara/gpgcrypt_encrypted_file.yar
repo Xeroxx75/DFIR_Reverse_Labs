@@ -4,7 +4,7 @@ rule GPGcryptor_Encrypted_File
         description = "Detects files encrypted by the academic GPGcryptor ransomware lab"
         author = "Ibrahim Diallo"
         context = "Academic malware analysis lab"
-        reference = "dfir-reverse-labs/malware-lab-gpgcryptor"
+        reference = "dfir-reverse-labs/dfir-malware-lab"
 
     strings:
         $magic = "GPGcrypt" ascii
