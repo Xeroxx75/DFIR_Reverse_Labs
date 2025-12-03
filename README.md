@@ -1,11 +1,7 @@
 # DFIR & Reverse Labs
 
 This repository gathers several hands-on labs in **DFIR**, **reverse engineering** and **malware analysis**.
-The goal is to document my technical exploration, consolidate practical knowledge, and share reproducible analysis artefacts.
-
-
-> All experiments are performed in isolated lab environments.  
-> No real-world malware binaries are distributed here.
+The goal is to document my technical exploration, consolidate practical knowledge, and share reproducible analysis artifacts.
 
 ---
 
@@ -40,13 +36,16 @@ The goal is to document my technical exploration, consolidate practical knowledg
   - detection of the GPGcryptor lab ransomware binary.  
   See `yara/README.md` for rule descriptions and usage examples.
 
+- `DFIR-memlab-truecrypt-keepass/`  
+  Windows Memory Forensics Lab – TrueCrypt & KeePass: full DFIR investigation from a Windows 7 memory dump (Volatility3, TrueCrypt, KeePass, artifact analysis, base64 decoding).
+
 ---
 
 ## Technologies & Tools
 
 Across these labs I use:
 
-- **DFIR / Forensics**: Windows artefacts (EVTX, Prefetch, Amcache), memory dumps, Python/PowerShell tooling.
+- **DFIR / Forensics**: Windows artifacts (EVTX, Prefetch, Amcache), memory dumps, Python/PowerShell tooling.
 - **Reverse engineering**: Ghidra, GDB/x64dbg, PE analysis tools.
 - **Detection engineering**: YARA rules based on strings, structures and IOCs derived from analysis.
 
