@@ -1,5 +1,5 @@
 
-# Sallos's Key License – Crackme x86 (reverse + keygen)
+# Sallos's Key License - Crackme x86 (reverse + keygen)
 
 Ce dépôt contient mon analyse et ma résolution du crackme **“Sallos's Key License”** (ASM x86, Windows).  
 Objectifs pédagogiques :
@@ -31,10 +31,10 @@ Ce lab est orienté **reverse & compréhension de logique de licence**, pas expl
 ## 2. Outils & environnement
 
 - VM Windows 10 (compte local non domaine).
-- **Detect It Easy (DiE)** – détection PE / packer.
-- **PE-bear** – inspection des headers, sections, imports.
-- **Ghidra** – désassemblage et décompilation.
-- **PowerShell** – génération du fichier `key.license`.
+- **Detect It Easy (DiE)** - détection PE / packer.
+- **PE-bear** - inspection des headers, sections, imports.
+- **Ghidra** - désassemblage et décompilation.
+- **PowerShell** - génération du fichier `key.license`.
 
 ---
 
@@ -42,7 +42,7 @@ Ce lab est orienté **reverse & compréhension de logique de licence**, pas expl
 
 ### 3.1 Detect It Easy
 
-![DiE – vue générale](images/die-overview.png)
+![DiE - vue générale](images/die-overview.png)
 
 Points clés :
 
@@ -51,7 +51,7 @@ Points clés :
 - **Taille ~5.5 KiB** : code très court → peu de fonctions, logique compacte.
 - **Pas de packer détecté** : binaire directement analysable (Ghidra, x32dbg, etc.).
 
-### 3.2 PE-bear – sections & imports
+### 3.2 PE-bear - sections & imports
 
 ![Sections PE-bear](images/pebear-sections.png)
 
@@ -114,7 +114,7 @@ Lors du premier import, Ghidra identifie `LAB_0040102e` comme un *label*, et non
 
 Voici un extrait brut de ce que Ghidra produit au départ :
 
-![Ghidra – code initial illisible](images/dialogproc-raw.png)
+![Ghidra - code initial illisible](images/dialogproc-raw.png)
 
 C’est typiquement le cas avec un binaire **MASM** très compact.
 
@@ -473,9 +473,9 @@ Ce challenge m’a permis de travailler les aspects suivants :
 
 ## 9. Sources & références
 
-1. [Crackmes.one – Sallos's Key License](https://crackmes.one/crackme/5b9c3f1e3f6f4a001f1e8b8d)
-2. [Microsoft Docs – DialogBoxParamA function](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-dialogboxparama)
-3. [Pinvoke.net – WM (Windows Messages)](https://www.pinvoke.net/default.aspx/Constants/WM.html)
+1. [Crackmes.one - Sallos's Key License](https://crackmes.one/crackme/5b9c3f1e3f6f4a001f1e8b8d)
+2. [Microsoft Docs - DialogBoxParamA function](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-dialogboxparama)
+3. [Pinvoke.net - WM (Windows Messages)](https://www.pinvoke.net/default.aspx/Constants/WM.html)
 ---
 
 

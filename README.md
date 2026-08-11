@@ -1,58 +1,23 @@
-# DFIR & Reverse Labs
+# DFIR and Reverse Engineering Labs
 
-This repository gathers several hands-on labs in **DFIR**, **reverse engineering** and **malware analysis**.
-The goal is to document my technical exploration, consolidate practical knowledge, and share reproducible analysis artifacts.
+Hands-on investigations and reverse-engineering exercises focused on evidence correlation, reproducible methods and concise reporting.
 
----
+## Featured Investigations
 
-## Contents
+| Project | Focus | Main techniques |
+| --- | --- | --- |
+| [Honeynet Collapse](dfir/honeynet-collapse/) | Six-stage TryHackMe investigation across Linux, Windows, memory, disk, NTFS and macOS | auditd, EVTX, Volatility 3, Zimmerman tools, APFS and cross-host timeline correlation |
+| [Windows Workstation Incident](dfir/windows-workstation-incident/) | Simulated endpoint compromise | Volatility 3, KAPE, Sysmon, Wireshark and timeline reconstruction |
+| [Windows Memory - TrueCrypt and KeePass](dfir/windows-memory-truecrypt-keepass/) | Memory-led recovery and artifact analysis | Volatility 3, process and credential artifacts, Base64 decoding |
 
-- `DFIR-Homelab-01/`  
-  DFIR investigation of a simulated incident on a Windows workstation:
-  - analysis of a PyInstaller-packed malware (`update_win.exe`),
-  - memory forensics (Volatility 3), disk triage (KAPE), and network analysis (Wireshark),
-  - correlation of Sysmon logs and reconstruction of the attack timeline.  
-  See `DFIR-Homelab-01/README.md`.
+## Malware Analysis and Reverse Engineering
 
-- `DFIR-Malware-Lab/`  
-  Academic ransomware analysis lab (CentraleSupélec):
-  - full report `TP_Analyse_GPGcryptor.pdf`,
-  - analysis of persistence, encrypted file format and Camellia-128 CFB crypto,
-  - defensive tools: Python decryptor and PowerShell restoration script.  
-  See `DFIR-Malware-Lab/README.md`.
+| Project | Focus | Deliverables |
+| --- | --- | --- |
+| [GPGcryptor](malware-analysis/gpgcryptor/) | Academic ransomware analysis | Technical report, decryptor and restoration script |
+| [Sallos Key License](reverse-engineering/sallos-key-license/) | Windows crackme and license validation | Static analysis, key generator and annotated screenshots |
+| [YARA Rules](detection/yara/) | Rules derived from analyzed samples | Binary and encrypted-file detection rules |
 
-- `crackme key-license/`  
-  Reverse engineering of the “Sallos's Key License” crackme:
-  - IDA/Ghidra-based analysis of the license verification logic,
-  - understanding of user / license key checks,
-  - small tooling in `generate_key.py` to reproduce the valid key,
-  - screenshots of the GUI, imports, and sections.  
-  See the local `README.md` in this folder for details.
+## Reporting Approach
 
-- `yara/`  
-  Educational YARA rules derived from the labs:
-  - detection of the crackme binary,
-  - detection of GPGcryptor encrypted files,
-  - detection of the GPGcryptor lab ransomware binary.  
-  See `yara/README.md` for rule descriptions and usage examples.
-
-- `DFIR-memlab-truecrypt-keepass/`  
-  Windows Memory Forensics Lab – TrueCrypt & KeePass: full DFIR investigation from a Windows 7 memory dump (Volatility3, TrueCrypt, KeePass, artifact analysis, base64 decoding).
-
----
-
-## Technologies & Tools
-
-Across these labs I use:
-
-- **DFIR / Forensics**: Windows artifacts (EVTX, Prefetch, Amcache), memory dumps, Python/PowerShell tooling.
-- **Reverse engineering**: Ghidra, GDB/x64dbg, PE analysis tools.
-- **Detection engineering**: YARA rules based on strings, structures and IOCs derived from analysis.
-
----
-
-## Disclaimer
-
-- This repository is intended for **educational and defensive** purposes only.  
-- All experiments are conducted in isolated lab environments.  
-- No real-world malware binaries are released here; only analysis reports, scripts and detection rules.
+The reports separate observations, interpretations and evidence constraints. Commands and parsers are included when they make an investigation reproducible, while raw secrets and unnecessary output are omitted.

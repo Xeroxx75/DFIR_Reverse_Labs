@@ -1,4 +1,4 @@
-# Incident Report – WS01 (DFIR Homelab)
+# Incident Report - WS01 (DFIR Homelab)
 
 ## 1. Executive Summary
 
@@ -10,7 +10,7 @@ The investigation identified execution of a suspicious binary `update_win.exe` u
 * renaming of user documents with a `.locked` extension, mimicking ransomware behaviour,
 * long-running processes remaining in memory.
 
-No evidence of lateral movement or persistence mechanisms (e.g. registry Run keys, scheduled tasks) was found. The activity was contained to WS01. 
+No evidence of lateral movement or persistence mechanisms (e.g. registry Run keys, scheduled tasks) was found. The activity was contained to WS01.
 
 ---
 
@@ -20,7 +20,7 @@ No evidence of lateral movement or persistence mechanisms (e.g. registry Run key
 * **OS:** Windows 10 x64 (build 19041)
 * **Role:** Domain-joined client in lab domain `corp.local`
 * **User affected:** `CORP\adminlab`
-* **Time of activity (approx.):** 2025-11-26 around 12:44–12:46 UTC
+* **Time of activity (approx.):** 2025-11-26 around 12:44-12:46 UTC
 * **Monitoring / artefacts available:**
 
   * Sysmon (Operational log, standard community config)
@@ -74,40 +74,40 @@ The investigation followed a standard DFIR workflow, starting from the most vola
 
 Sysmon provided a clear sequence of events around the introduction and execution of `update_win.exe`:
 
-1. **File creation in Downloads (Event ID 11 – RuleName: Downloads)**  
-   - `Image: C:\Windows\Explorer.EXE` (PID 1684, user `CORP\adminlab`)  
-   - `TargetFilename: C:\Users\adminlab\Downloads\update_win.exe`  
-   - `UtcTime: 2025-11-26 12:44:36.745`  
+1. **File creation in Downloads (Event ID 11 - RuleName: Downloads)**
+   - `Image: C:\Windows\Explorer.EXE` (PID 1684, user `CORP\adminlab`)
+   - `TargetFilename: C:\Users\adminlab\Downloads\update_win.exe`
+   - `UtcTime: 2025-11-26 12:44:36.745`
 
    This shows the binary being written to disk under the user’s profile by Explorer (most likely a manual download or copy).
 
-2. **First execution (Event ID 1 – Process Create)**  
-   - `Image: C:\Users\adminlab\Downloads\update_win.exe`  
-   - `CommandLine: "C:\Users\adminlab\Downloads\update_win.exe"`  
-   - `User: CORP\adminlab`  
-   - `Hashes: MD5=0008152B..., SHA256=347C9369..., IMPHASH=351592D5...`  
-   - `ParentImage: C:\Windows\Explorer.EXE` (PID 1684)  
+2. **First execution (Event ID 1 - Process Create)**
+   - `Image: C:\Users\adminlab\Downloads\update_win.exe`
+   - `CommandLine: "C:\Users\adminlab\Downloads\update_win.exe"`
+   - `User: CORP\adminlab`
+   - `Hashes: MD5=0008152B..., SHA256=347C9369..., IMPHASH=351592D5...`
+   - `ParentImage: C:\Windows\Explorer.EXE` (PID 1684)
 
    This confirms the user launching the binary from the Downloads folder and provides a strong set of file hashes for IOC purposes.
 
-3. **DLL extraction phase (multiple Event ID 11 – RuleName: DLL)**  
+3. **DLL extraction phase (multiple Event ID 11 - RuleName: DLL)**
    Several Sysmon 11 events are triggered shortly after process creation, all with:
-   - `Image: C:\Users\adminlab\Downloads\update_win.exe`  
-   - `TargetFilename` values under `C:\Users\adminlab\AppData\Local\Temp\_MEIxxxxx\`, for example:  
-     - `python313.dll`  
-     - `libssl-3.dll`  
-     - `libffi-8.dll`  
-     - `libcrypto-3.dll`  
-     - `VCRUNTIME140.dll`  
+   - `Image: C:\Users\adminlab\Downloads\update_win.exe`
+   - `TargetFilename` values under `C:\Users\adminlab\AppData\Local\Temp\_MEIxxxxx\`, for example:
+     - `python313.dll`
+     - `libssl-3.dll`
+     - `libffi-8.dll`
+     - `libcrypto-3.dll`
+     - `VCRUNTIME140.dll`
 
    This pattern is typical of **PyInstaller**-packed executables, where a first-stage loader unpacks the Python runtime and libraries into a temporary `_MEI*` directory.
 
-4. **Second-stage child processes (Event ID 1)**  
+4. **Second-stage child processes (Event ID 1)**
    Additional Sysmon process-creation events show `update_win.exe` spawning child instances of itself:
 
-   - Example:  
-     - Parent: `update_win.exe` (PID 13092)  
-     - Child: `update_win.exe` (PID 13024)  
+   - Example:
+     - Parent: `update_win.exe` (PID 13092)
+     - Child: `update_win.exe` (PID 13024)
 
    The resulting process tree looks like:
 
@@ -115,11 +115,11 @@ Sysmon provided a clear sequence of events around the introduction and execution
 
    This two-stage chain is another strong indicator of PyInstaller-based malware.
 
-5. **Network connections (Event ID 3 – NetworkConnect)**  
-   - `Image: C:\Users\adminlab\Downloads\update_win.exe`  
-   - `SourceIp: 192.168.56.20` (WS01), `SourcePort: 49675 / 49677`  
-   - `DestinationIp: 192.168.56.30`, `DestinationPort: 8000`  
-   - `Protocol: tcp`, `Initiated: true`  
+5. **Network connections (Event ID 3 - NetworkConnect)**
+   - `Image: C:\Users\adminlab\Downloads\update_win.exe`
+   - `SourceIp: 192.168.56.20` (WS01), `SourcePort: 49675 / 49677`
+   - `DestinationIp: 192.168.56.30`, `DestinationPort: 8000`
+   - `Protocol: tcp`, `Initiated: true`
 
    These entries match the HTTP GET requests observed on the Kali HTTP server and in the PCAP, confirming that `update_win.exe` is responsible for the C2-like “phone home” behaviour.
 
@@ -132,7 +132,7 @@ Volatility `windows.pslist` and `windows.pstree` show multiple instances of `upd
   * `PID 13092, PPID 1684, Image: update_win.exe, Start: 2025-11-26 12:44:57 UTC`
   * `PID 13024, PPID 13092, Image: update_win.exe, Start: 2025-11-26 12:44:57 UTC`
   * `PID 11800, PPID 1684, Image: update_win.exe, Start: 2025-11-26 12:45:02 UTC`
-  * `PID 8640,  PPID 11800, Image: update_win.exe, Start: 2025-11-26 12:45:02 UTC` 
+  * `PID 8640,  PPID 11800, Image: update_win.exe, Start: 2025-11-26 12:45:02 UTC`
 
 All instances point to the same executable path:
 
@@ -173,7 +173,7 @@ Host triage and directory listing on WS01 reveal the following artefacts:
 
      * Original file SHA-256:
        `347c93696c437e5e69339e23f5327c27e6f69a379e29be9ad30e759b46f86cf3`
-     * Memory-backed images (`.dat`, `.img`) have different hashes, as expected for loaded PE images. 
+     * Memory-backed images (`.dat`, `.img`) have different hashes, as expected for loaded PE images.
 
 ### 4.4 Network activity
 
@@ -185,7 +185,7 @@ The server logs show inbound requests from WS01:
 * HTTP method: `GET`
 * Response code: `404` (expected from a simple Python `http.server`)
 
-Wireshark PCAP captured the same HTTP traffic between WS01 and the Kali host. This behaviour matches the “phone-home” / C2 simulation stage in the malware code. 
+Wireshark PCAP captured the same HTTP traffic between WS01 and the Kali host. This behaviour matches the “phone-home” / C2 simulation stage in the malware code.
 
 At the time of memory acquisition, `windows.netscan` shows no active connections belonging to `update_win.exe`, which is consistent with a short-lived HTTP request occurring before the memory snapshot.
 
@@ -283,7 +283,7 @@ Based on this incident, the following measures are recommended for a production 
 
 ---
 
-## 8. Appendix – High-Level Timeline (UTC)
+## 8. Appendix - High-Level Timeline (UTC)
 
 | Time (approx.)          | Source          | Event                                                                |
 | ----------------------- | --------------- | -------------------------------------------------------------------- |
@@ -292,7 +292,7 @@ Based on this incident, the following measures are recommended for a production 
 | 2025-11-26 12:45:02     | Volatility      | Additional `update_win.exe` processes (PIDs 11800, 8640)             |
 | ~2025-11-26 12:45:00-05    | Wireshark/HTTP  | HTTP GET `/connect?user=adminlab&os=Windows` to 192.168.56.30:8000   |
 | 2025-11-26 12:45:01-06     | Host filesystem | Files in `Documents` renamed to `.locked`; `malware_log.txt` created |
-| 2025-11-26 12:45:16–19  | Volatility / PS | `kape.exe` and `DumpIt.exe` executed for artefact collection         |
+| 2025-11-26 12:45:16-19  | Volatility / PS | `kape.exe` and `DumpIt.exe` executed for artefact collection         |
 | 2025-11-26 12:45:23     | Volatility info | System time recorded in memory image header                          |
 
 This timeline correlates user activity, malware execution, network communication, and response actions taken during the investigation.

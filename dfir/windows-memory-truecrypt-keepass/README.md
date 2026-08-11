@@ -1,4 +1,4 @@
-# Windows Memory Forensics Lab – Summary Report
+# Windows Memory Forensics Lab - Summary Report
 
 ## 1. Context and objective
 
