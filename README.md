@@ -18,6 +18,12 @@ Hands-on investigations and reverse-engineering exercises focused on evidence co
 | [Sallos Key License](reverse-engineering/sallos-key-license/) | Windows crackme and license validation | Static analysis, key generator and annotated screenshots |
 | [YARA Rules](detection/yara/) | Rules derived from analyzed samples | Binary and encrypted-file detection rules |
 
+## Binary Exploitation Case Study
+
+| Project | Focus | Main techniques |
+| --- | --- | --- |
+| [Incident to RCE](https://github.com/Xeroxx75/incident-to-rce) | Controlled incident-to-RCE study connecting PCAP reconstruction with a C audit and remediation | Format-string leak, off-by-one, stack corruption, GDB, x86 shellcode and end-to-end tested RCE |
+
 ## Reporting Approach
 
 The reports separate observations, interpretations and evidence constraints. Commands and parsers are included when they make an investigation reproducible, while raw secrets and unnecessary output are omitted.
